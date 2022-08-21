@@ -1,0 +1,76 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Role {
+  id Int [pk, increment]
+  role String [not null]
+  users User [not null]
+}
+
+Table DailyDish {
+  id Int [pk, increment]
+  date DateTime [default: `now()`, not null]
+  dish Dish [not null]
+  dishId Int [not null]
+}
+
+Table User {
+  id Int [pk, increment]
+  name String [not null]
+  surname String [not null]
+  middleName String
+  email String [not null]
+  roleId Int [not null]
+  role Role [not null]
+  userOrder UserOrder [not null]
+}
+
+Table Dish {
+  id Int [pk, increment]
+  name String [unique, not null]
+  category DishCategory [not null]
+  menu_type DishMenuType [not null]
+  description String [not null]
+  price Int [not null]
+  pfc String
+  note String
+  image String
+  DailyDish DailyDish [not null]
+  userOrder UserOrder [not null]
+}
+
+Table UserOrder {
+  id Int [pk, increment]
+  dishId Int [not null]
+  userId Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  order_date DateTime [not null]
+  amount Int [not null]
+  user User [not null]
+  dish Dish [not null]
+  price Int [not null]
+}
+
+Enum DishMenuType {
+  COMMON
+  DIET
+  PREMIUM
+}
+
+Enum DishCategory {
+  SOUP
+  GARNISH
+  MEAT
+  FISH
+  DRINK
+}
+
+Ref: DailyDish.dishId > Dish.id [delete: Cascade]
+
+Ref: User.roleId > Role.id
+
+Ref: UserOrder.userId > User.id
+
+Ref: UserOrder.dishId > Dish.id

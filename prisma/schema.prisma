@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  role  String
+  users User[]
+}
+
+model DailyDish{
+    id Int @id @default(autoincrement())
+    date DateTime @default(now()) @db.Timestamptz(3)
+    dish Dish @relation(fields: [dishId],references: [id],onDelete:Cascade)
+    dishId Int
+}
+
+model User {
+  id         Int     @id @default(autoincrement())
+  name       String
+  surname    String
+  middleName String?
+  email      String
+  roleId     Int
+  role       Role    @relation(fields: [roleId], references: [id])
+  userOrder   UserOrder[]
+}
+
+enum DishMenuType {
+  COMMON     @map("common")
+  DIET       @map("diet")
+  PREMIUM    @map("premium")
+}
+
+enum DishCategory {
+  SOUP       @map("soup")
+  GARNISH    @map("garnish")
+  MEAT       @map("meat")
+  FISH       @map("fish")
+  DRINK      @map("drink")
+}
+
+model Dish {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  category    DishCategory
+  menu_type   DishMenuType
+  description String
+  price       Int
+  pfc         String?
+  note        String?
+  image       String?
+  DailyDish   DailyDish[]
+  userOrder   UserOrder[]
+}
+
+model UserOrder {
+  id          Int       @id @default(autoincrement())
+  dishId      Int
+  userId      Int
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(3)
+  order_date  DateTime  @db.Timestamptz(3)
+  amount      Int
+  user        User      @relation(fields: [userId], references: [id])
+  dish        Dish      @relation(fields: [dishId], references: [id])
+  price       Int
+}
