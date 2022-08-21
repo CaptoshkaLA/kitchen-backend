@@ -1,0 +1,389 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Kitchen Backend",
+    "version": "1.0.0",
+    "description": "Backend of Kitchen App",
+    "contact": {
+      "name": "Lisovsky Anton",
+      "url": "https://github.com/CaptoshkaLA"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:80/",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/auth/sign-in": {
+      "post": {
+        "summary": "Authenticate a user",
+        "description": "Authenticate a user with login and password and generates JWT token for him",
+        "tags": ["Authentication"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Credentials to log in",
+            "schema": {
+              "$ref": "#/definitions/login-user"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/logined-user"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/error-login"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dish-response/putDishById/{id}": {
+      "put": {
+        "summary": "Change a dish data",
+        "description": "Change a dish data fields by specified id",
+        "tags": ["Dish directory"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of dish you want to change",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Parameters you want to set to dish",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dish-request"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/dish-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/dish/getDishes": {
+      "get": {
+        "summary": "Get all dishes",
+        "description": "Get all dishes that have been added to dish directory",
+        "tags": ["Dish directory"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "schema": {
+                      "$ref": "#/definitions/dish-response"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/dish/getDishById/{id}": {
+      "get": {
+        "summary": "Get specific dish",
+        "description": "Get dish by its ID specified in URL path",
+        "tags": ["Dish directory"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of dish-response you want to get",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/dish-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/dish/deleteDishById/{id}": {
+      "delete": {
+        "summary": "Delete specific dish",
+        "description": "Delete dish by its ID specified in URL path",
+        "tags": ["Dish directory"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of dish-response you want to delete",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/dish-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/dish/postDish": {
+      "post": {
+        "summary": "Add new dish",
+        "description": "Add new dish to dish directory",
+        "tags": ["Dish directory"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Parameters of dish which you want to add",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dish-request"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/dish-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "middleName": {
+          "type": "string"
+        }
+      },
+      "required": ["userId", "name", "surname"]
+    },
+    "login-user": {
+      "type": "object",
+      "properties": {
+        "login": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "required": ["login", "password"]
+    },
+    "logined-user": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "middleName": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "accessToken": {
+          "type": "string"
+        }
+      },
+      "required": ["userId", "email", "name", "surname", "role", "accessToken"]
+    },
+    "error-login": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": ["success", "error"]
+    },
+    "dish-response": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["soup", "garnish", "meat", "fish", "drink"]
+        },
+        "menu_type": {
+          "type": "string",
+          "enum": ["common", "diet", "premium"]
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "integer"
+        },
+        "pfc": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "category",
+        "menu_type",
+        "description",
+        "price"
+      ]
+    },
+    "dish-request": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["soup", "garnish", "meat", "fish", "drink"]
+        },
+        "menu_type": {
+          "type": "string",
+          "enum": ["common", "diet", "premium"]
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "integer"
+        },
+        "pfc": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        }
+      },
+      "required": ["name", "category", "menu_type", "description", "price"]
+    }
+  }
+}
