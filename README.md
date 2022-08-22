@@ -48,3 +48,4 @@ Tools
 - [Helmet/Cors](https://github.com/helmetjs/helmet/)
 - [Debugger](https://nodejs.org/api/debugger.html)
 - [Winston Logger](https://www.npmjs.com/package/winston)
+- [Cookie Parser](https://www.npmjs.com/package/cookie-parser)
